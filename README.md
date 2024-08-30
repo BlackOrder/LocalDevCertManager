@@ -1,90 +1,101 @@
 # LocalDevCertManager
 
-**LocalDevCertManager** is a script-based tool for generating and managing SSL/TLS certificates for local development environments. This tool creates a root Certificate Authority (CA) and generates domain-specific certificates signed by this CA, ensuring secure communication for development purposes.
+LocalDevCertManager is a script-based tool to create and manage SSL/TLS certificates for local development. This tool sets up a root Certificate Authority (CA) and generates domain-specific certificates signed by the CA.
 
 ## Features
 
-- **Root CA Generation**: Creates a root CA with an encrypted private key to securely sign certificates.
-- **Certificate Management**: Generates and manages SSL/TLS certificates for multiple domains or subdomains.
-- **Automated Renewal**: Automatically renews certificates when they are expired or missing necessary domains.
-- **Easy Configuration**: Uses template configuration files to simplify the certificate creation process.
-
+Create a root Certificate Authority (CA) for local development.
+Generate domain-specific certificates signed by the root CA.
+Add, remove, or replace domains in existing certificates.
+User-friendly prompts with colorful output for better readability.
+Configuration files created automatically from templates if they do not exist.
+Secure encrypted private keys for the root CA.
 ## Prerequisites
 
-- **OpenSSL**: Ensure OpenSSL is installed on your machine.
-
+OpenSSL: Ensure you have OpenSSL installed on your system.
+macOS: `brew install openssl`
+Ubuntu/Debian: `sudo apt-get install openssl`
+Arch Linux: `sudo pacman -S openssl`
 ## Installation
 
-1. **Clone the repository**:
+Clone the Repository:
+```bash
+git clone https://github.com/blackorder/LocalDevCertManager.git
+cd LocalDevCertManager
+```
 
-    ``` bash
-    git clone https://github.com/yourusername/LocalDevCertManager.git
-    cd LocalDevCertManager
-    ```
-
-2. **Make the script executable**:
-
-    ``` bash
-    chmod +x generate_certificates.sh
-    ```
+Make Scripts Executable:
+```bash
+chmod +x generate_certificates.sh
+chmod +x lib/*.sh
+```
 
 ## Usage
 
-To create or manage certificates, run the ` generate_certificates.sh ` script with the following parameters:
+```bash Usage: ./generate_certificates.sh <cert_name> <domain1> [<domain2> ... <domainN>] <--add|--remove|--replace> [--force] ```
 
-``` bash
-./generate_certificates.sh <cert_name> <domain1> [<domain2> ... <domainN>]
-```
+## Arguments
 
-### Example
+`cert_name`: A friendly name for the certificate. This name will be used to identify the certificate file.
+`domain1`: The primary domain for the certificate (e.g., 'example.local').
+`domain2`: Additional domains or subdomains for the certificate (optional).
+`--add`: Add new domains to an existing certificate (mandatory, choose only one mode).
+`--remove`: Remove specified domains from an existing certificate (mandatory, choose only one mode).
+`--replace`: Replace all existing domains in the certificate with new ones (mandatory, choose only one mode).
+`--force`: Skip all confirmation prompts and force the action.
+## Example
 
-``` bash
-./generate_certificates.sh "MyCert" example.local www.example.local api.example.local
-```
+```bash ./generate_certificates.sh MyCert example.local www.example.local api.example.local --add ```
 
-This command creates a new certificate named ` MyCert ` for the domains ` example.local `, ` www.example.local `, and ` api.example.local `.
+This example adds 'example.local', 'www.example.local', and 'api.example.local' to the 'MyCert' certificate, preserving existing domains.
 
-### Notes
+## Notes
 
-- If the configuration files (` config_ssl.cnf ` or ` config_ssl_ca.cnf `) do not exist, the script will generate them based on the template files and prompt the user for required details.
-- The generated certificates are stored in the ` certs ` directory, and the root CA is stored in the ` ca ` directory.
+You must specify exactly one mode (`--add`, `--remove`, or `--replace`).
+At least one domain must be provided.
+The script will prompt for user input to create configuration files if they do not exist.
+The root CA key is created with encryption and will require a passphrase for security.
+The generated certificates are stored in the 'certs' directory, and the root CA is stored in the 'ca' directory.
+## Example Commands
 
+To add domains to an existing certificate:
+```bash ./generate_certificates.sh MyCert newdomain.local --add ```
 
-## Trusting the CA Certificate
+To remove domains from an existing certificate:
+```bash ./generate_certificates.sh MyCert olddomain.local --remove ```
 
-To make your generated certificates trusted by your browser and operating system, you need to trust the root CA certificate.
+To replace all domains in an existing certificate:
+```bash ./generate_certificates.sh MyCert newdomain1.local newdomain2.local --replace ```
 
-### Windows
+To force actions without confirmation prompts:
+```bash ./generate_certificates.sh MyCert newdomain.local --add --force ```
 
-Open the Run dialog by pressing ` Win + R `, type ` certmgr.msc `, and press Enter.
-In the Certificates - Current User window, navigate to Trusted Root Certification Authorities # Certificates.
-Right-click inside the window and select All Tasks # Import....
-Follow the prompts to import the ` ca.crt ` file from the ` ca ` directory of this repository.
-Restart your browser to apply the changes.
-### Linux
+## Steps to Trust the CA
 
-Copy the CA certificate (` ca/ca.crt `) to the trusted certificates directory (e.g., ` /usr/local/share/ca-certificates/ `).
+Windows
+Locate the root CA certificate file, typically stored in the ca directory (e.g., ca.crt).
+Open the "Run" dialog (`Windows key + R`), type mmc, and press Enter.
+In the "Console", go to File ``` Add/Remove Snap-in```.
+Select Certificates and click Add, choose Computer Account, then click Next, Finish, and OK.
+Navigate to Trusted Root Certification Authorities ``` Certificates```.
+Right-click in the window and select All Tasks ``` Import```.
+Follow the wizard to import the ca.crt file.
+Linux
+Locate the root CA certificate file, typically stored in the ca directory (e.g., ca.crt).
+Copy the certificate to the trusted root CA directory:
+```bash sudo cp ca/ca.crt /usr/local/share/ca-certificates/ ```
 
-``` bash sudo cp ca/ca.crt /usr/local/share/ca-certificates/localdevca.crt ```
-
-Update the CA store:
-
-``` bash sudo update-ca-certificates ```
-
-Restart your browser to apply the changes.
-
-## Files
-
-- **.gitignore**: Lists files and directories to be ignored by Git, such as generated certificates and configuration files.
-- **config_ca.cnf**: Configuration file for the root Certificate Authority.
-- **config_ssl_ca_template.cnf**: Template for creating the CA configuration file.
-- **config_ssl_template.cnf**: Template for creating the SSL certificate configuration file.
-- **generate_certificates.sh**: Main script to generate and manage certificates.
-
-## Contributing
-
-Feel free to open issues, submit pull requests, or suggest features to improve this tool.
+Update the certificate store:
+```bash sudo update-ca-certificates ```
 
 ## License
 
-This project is licensed under the MIT License - see the ` LICENSE ` file for details.
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## Author
+
+Developed by [blackorder](https://www.github.com/blackorder) with :heart: and :coffee:.

@@ -33,7 +33,7 @@ chmod +x lib/*.sh
 ## Usage
 
 ```bash
-Usage: ./generate_certificates.sh <cert_name> <domain1> [<domain2> ... <domainN>] <--add|--remove|--replace> [--force]
+Usage: ./generate_certificates.sh <cert_name> <--add|--remove|--replace> [--force] <domain1> [<domain2> ... <domainN>]
 ```
 
 ## Arguments

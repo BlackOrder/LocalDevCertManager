@@ -1,0 +1,19 @@
+[ req ]
+default_bits = 2048
+prompt = no
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+
+[ req_distinguished_name ]
+countryName = {COUNTRY}
+stateOrProvinceName = {STATE}
+localityName = {LOCALITY}
+organizationName = {ORG_NAME}
+organizationalUnitName = {ORG_UNIT}
+commonName = DevRootCA
+emailAddress = {EMAIL}
+
+[ v3_req ]
+keyUsage = digitalSignature, keyCertSign
+basicConstraints = CA:true
+subjectKeyIdentifier = hash

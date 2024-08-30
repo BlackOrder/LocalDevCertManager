@@ -1,0 +1,22 @@
+[ req ]
+default_bits = 2048
+prompt = no
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+
+[ req_distinguished_name ]
+countryName = {COUNTRY}
+stateOrProvinceName = {STATE}
+localityName = {LOCALITY}
+organizationName = {ORG_NAME}
+organizationalUnitName = {ORG_UNIT}
+commonName = {DOMAIN}
+emailAddress = {EMAIL}
+
+{alternate_names}
+
+[ v3_req ]
+keyUsage = digitalSignature
+basicConstraints = CA:false
+subjectAltName = @alternate_names
+subjectKeyIdentifier = hash

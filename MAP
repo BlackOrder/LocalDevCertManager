@@ -1,0 +1,19 @@
+LocalDevCertManager/
+├── generate_certificates.sh   # Main script
+├── lib/
+│   ├── config.sh              # Functions for managing configuration files
+│   ├── ca.sh                  # Functions for managing the root CA
+│   ├── cert.sh                # Functions for checking and creating certificates
+│   └── utils.sh               # Utility functions
+├── ca/                        # Directory for CA certificate and key
+│   ├── ca.crt                 # CA certificate file
+│   └── ca.key                 # CA private key file
+├── ca_files/                  # Directory for CA-related files
+│   ├── ca.srl                 # CA serial number file
+│   └── index.txt              # CA index file
+├── certs/                     # Directory for current certificates
+│   └── old/                   # Subdirectory for old certificates
+│       └── <cert_name>/       # Subdirectory for each certificate's old versions
+├── config_ca.cnf              # CA configuration file
+├── config_ssl_ca_template.cnf # Template for root CA config
+└── config_ssl_template.cnf    # Template for child certificate config

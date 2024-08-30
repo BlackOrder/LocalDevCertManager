@@ -1,0 +1,7 @@
+/ca
+/certs
+/ca_files
+index.txt
+index.txt*
+config_ssl.cnf
+config_ssl_ca.cnf

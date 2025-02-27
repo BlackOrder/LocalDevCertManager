@@ -19,6 +19,6 @@ create_root_ca() {
     touch ca_files/index.txt
     if [ ! -f ca_files/ca.srl ]; then
         echo "${yellow}Initializing serial number for CA...${reset}"
-        echo 00 > ca_files/ca.srl  # Initialize serial number
+        echo "01" > ca_files/ca.srl  # Initialize serial number
     fi
 }

@@ -104,7 +104,7 @@ generate_temp_certificate() {
     openssl req -new -sha256 -key "$TEMP_KEY_PATH" -config config_ssl_multi.cnf -out "certs/$TEMP_CERT_NAME.csr"
 
     # Ensure Serial and Index Files Exist
-    [ ! -f ca_files/ca.srl ] && echo 00 > ca_files/ca.srl
+    [ ! -f ca_files/ca.srl ] && echo "01" > ca_files/ca.srl
     [ ! -f ca_files/index.txt ] && touch ca_files/index.txt
 
     echo "${yellow}Signing the temporary certificate for all provided domains...${reset}"

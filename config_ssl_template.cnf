@@ -16,7 +16,8 @@ emailAddress = {EMAIL}
 {alternate_names}
 
 [ v3_req ]
-keyUsage = digitalSignature
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth, serverAuth
 basicConstraints = CA:false
 subjectAltName = @alternate_names
 subjectKeyIdentifier = hash

@@ -14,6 +14,9 @@ fi
 # Initialize variables
 CERT_NAME=$1
 shift
+
+CERT_TYPE=""
+VALIDITY_DAYS=0
 ADD_MODE=false
 REMOVE_MODE=false
 REPLACE_MODE=false
@@ -27,10 +30,24 @@ while [[ "$1" != "" ]]; do
         --remove) REMOVE_MODE=true ;;
         --replace) REPLACE_MODE=true ;;
         --force) FORCE_MODE=true ;;
+        --type)
+            shift
+            CERT_TYPE="$1"
+            ;;
+        --validity)
+            shift
+            VALIDITY_DAYS="$1"
+            ;;
         *) DOMAINS+=("$1") ;;
     esac
     shift
 done
+
+# Validate that certificate type is specified and valid
+if [[ "$CERT_TYPE" != "client" && "$CERT_TYPE" != "member" && "$CERT_TYPE" != "localdev" ]]; then
+    echo "${red}Error: You must specify a valid certificate type with --type [client|member|localdev].${reset}"
+    exit 1
+fi
 
 # Validate mode and domain count
 mode_count=0
@@ -58,8 +75,18 @@ mkdir -p ca certs/old ca_files
 # Config file paths
 TEMPLATE_CONFIG_CA_FILE="config_ssl_ca_template.cnf"
 CONFIG_CA_FILE="config_ssl_ca.cnf"
-TEMPLATE_CONFIG_FILE="config_ssl_template.cnf"
-CONFIG_FILE="config_ssl.cnf"
+
+# Choose the template based on certificate type
+if [ "$CERT_TYPE" = "member" ]; then
+    TEMPLATE_CONFIG_FILE="config_ssl_member_template.cnf"
+    CONFIG_FILE="config_ssl_member.cnf"
+elif [ "$CERT_TYPE" = "client" ]; then
+    TEMPLATE_CONFIG_FILE="config_ssl_client_template.cnf"
+    CONFIG_FILE="config_ssl_client.cnf"
+elif [ "$CERT_TYPE" = "localdev" ]; then
+    TEMPLATE_CONFIG_FILE="config_ssl_localdev_template.cnf"
+    CONFIG_FILE="config_ssl_localdev.cnf"
+fi
 
 # Create configuration files if needed
 create_config_files

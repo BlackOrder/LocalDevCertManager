@@ -9,7 +9,7 @@ countryName = {COUNTRY}
 stateOrProvinceName = {STATE}
 localityName = {LOCALITY}
 organizationName = {ORG_NAME}
-organizationalUnitName = {ORG_UNIT}
+organizationalUnitName = MongoDB Server
 commonName = {DOMAIN}
 emailAddress = {EMAIL}
 

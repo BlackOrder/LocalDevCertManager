@@ -15,5 +15,8 @@ copy_extensions = copy
 [ my_policy ]
 countryName = match
 stateOrProvinceName = supplied
+localityName = supplied
 organizationName = supplied
+organizationalUnitName = supplied
 commonName = supplied
+emailAddress = supplied

@@ -95,7 +95,7 @@ generate_temp_certificate() {
         ((i++))
     done
 
-    cp config_ssl.cnf config_ssl_multi.cnf
+    cp $CONFIG_FILE config_ssl_multi.cnf
     sed -i "s/{DOMAIN}/$UNIQUE_CN/g" config_ssl_multi.cnf
     sed -i "s/{alternate_names}/$SAN/g" config_ssl_multi.cnf
 
@@ -107,8 +107,15 @@ generate_temp_certificate() {
     [ ! -f ca_files/ca.srl ] && echo "01" > ca_files/ca.srl
     [ ! -f ca_files/index.txt ] && touch ca_files/index.txt
 
+    # Build the days option if the override is set.
+    if [ "$VALIDITY_DAYS" -gt 0 ]; then
+        DAYS_OPTION="-days $VALIDITY_DAYS"
+    else
+        DAYS_OPTION=""
+    fi
+
     echo "${yellow}Signing the temporary certificate for all provided domains...${reset}"
-    openssl ca -config config_ca.cnf -out "$TEMP_CERT_PATH" -in "certs/$TEMP_CERT_NAME.csr" -keyfile ca/ca.key
+    openssl ca -passin env:CA_KEY_PASS -batch -config config_ca.cnf $DAYS_OPTION -out "$TEMP_CERT_PATH" -in "certs/$TEMP_CERT_NAME.csr" -keyfile ca/ca.key
 
     rm config_ssl_multi.cnf
     rm "certs/$TEMP_CERT_NAME.csr"

@@ -5,3 +5,6 @@ index.txt
 index.txt*
 config_ssl.cnf
 config_ssl_ca.cnf
+config_ssl_member.cnf
+config_ssl_client.cnf
+config_ssl_localdev.cnf

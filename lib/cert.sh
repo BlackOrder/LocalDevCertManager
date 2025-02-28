@@ -88,14 +88,7 @@ rename_old_certificate() {
 
 # Function to generate a new temporary certificate
 generate_temp_certificate() {
-    SAN="[ alternate_names ]\n"
-    i=1
-    for DOMAIN in "${DOMAINS[@]}"; do
-        SAN+="DNS.$i = $DOMAIN\n"
-        ((i++))
-    done
-
-    cp $CONFIG_FILE config_ssl_multi.cnf
+    cp "$CONFIG_FILE" config_ssl_multi.cnf
     sed -i "s/{DOMAIN}/$UNIQUE_CN/g" config_ssl_multi.cnf
     sed -i "s/{alternate_names}/$SAN/g" config_ssl_multi.cnf
 

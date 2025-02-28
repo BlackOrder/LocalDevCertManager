@@ -66,8 +66,20 @@ fi
 
 # Generate unique CN and temporary certificate name
 TIMESTAMP=$(date '+%Y%m%d%H%M%S')
-UNIQUE_CN="${CERT_NAME//[^a-zA-Z0-9]/-}-$TIMESTAMP"
-TEMP_CERT_NAME="temp_cert_$UNIQUE_CN"
+
+# Set the CN as the first domain in the DOMAINS array
+UNIQUE_CN="${DOMAINS[0]}"
+
+# Build the alternate names block only if more than one domain is supplied
+SAN="[ alternate_names ]\n"
+i=0
+# Skip the first domain since it's used as the CN
+for DOMAIN in "${DOMAINS[@]}"; do
+    SAN+="DNS.$i = $DOMAIN\n"
+    ((i++))
+done
+
+TEMP_CERT_NAME="temp_cert_${CERT_NAME//[^a-zA-Z0-9]/-}-$TIMESTAMP"
 
 # Ensure necessary directories exist
 mkdir -p ca certs/old ca_files
@@ -123,6 +135,10 @@ if openssl x509 -noout -in "$TEMP_CERT_PATH"; then
     mv "$TEMP_CERT_PATH" "$CERT_PATH"
     mv "$TEMP_KEY_PATH" "$KEY_PATH"
     echo "${green}Temporary certificate renamed to $CERT_NAME successfully.${reset}"
+
+    # Create a combined PEM file (key + cert) for applications that require a single file.
+    cat "$KEY_PATH" "$CERT_PATH" > "certs/${CERT_NAME}.pem"
+    echo "${green}Combined PEM file created as certs/${CERT_NAME}.pem.${reset}"
 else
     echo "${red}Error: Temporary certificate creation failed or invalid. Aborting.${reset}"
     rm -f "$TEMP_CERT_PATH" "$TEMP_KEY_PATH"
